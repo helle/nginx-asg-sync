@@ -96,10 +96,12 @@ func main() {
 
 			var added, removed []string
 
+			extraParams := makeExtraParams(&ups)
+
 			if ups.Kind == "http" {
-				added, removed, err = nginx.UpdateHTTPServers(ups.Name, backends)
+				added, removed, err = nginx.UpdateHTTPServers(ups.Name, backends, extraParams)
 			} else {
-				added, removed, err = nginx.UpdateStreamServers(ups.Name, backends)
+				added, removed, err = nginx.UpdateStreamServers(ups.Name, backends, extraParams)
 			}
 			if err != nil {
 				log.Printf("Couldn't update servers in NGINX: %v", err)

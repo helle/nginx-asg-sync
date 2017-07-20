@@ -43,15 +43,15 @@ func (client *NginxClient) CheckIfStreamUpstreamExists(upstream string) error {
 // UpdateHTTPServers updates the servers of the HTTP upstream.
 // Servers that are in the slice, but don't exist in NGINX will be added to NGINX.
 // Servers that aren't in the slice, but exist in NGINX, will be removed from NGINX.
-func (client *NginxClient) UpdateHTTPServers(upstream string, servers []string) ([]string, []string, error) {
-	return client.httpClient.UpdateServers(upstream, servers)
+func (client *NginxClient) UpdateHTTPServers(upstream string, servers []string, extraParams string) ([]string, []string, error) {
+	return client.httpClient.UpdateServers(upstream, servers, extraParams)
 }
 
 // UpdateStreamServers updates the servers of the Stream upstream.
 // Servers that are in the slice, but don't exist in NGINX will be added to NGINX.
 // Servers that aren't in the slice, but exist in NGINX, will be removed from NGINX.
-func (client *NginxClient) UpdateStreamServers(upstream string, servers []string) ([]string, []string, error) {
-	return client.streamClient.UpdateServers(upstream, servers)
+func (client *NginxClient) UpdateStreamServers(upstream string, servers []string, extraParams string) ([]string, []string, error) {
+	return client.streamClient.UpdateServers(upstream, servers, extraParams)
 }
 
 // Client lets you add/remove servers to/from NGINX Plus via its upstream_conf API
@@ -178,7 +178,7 @@ func (client *Client) getUpstreamPeers(upstream string) (*peers, error) {
 }
 
 // AddServer adds the server to the upstream.
-func (client *Client) AddServer(upstream string, server string) error {
+func (client *Client) AddServer(upstream string, server string, extraParams string) error {
 	id, err := client.getIDOfServer(upstream, server)
 
 	if err != nil {
@@ -188,7 +188,7 @@ func (client *Client) AddServer(upstream string, server string) error {
 		return fmt.Errorf("Failed to add %v server to %v upstream: server already exists", server, upstream)
 	}
 
-	request := fmt.Sprintf("%v&upstream=%v&add=&server=%v", client.upstreamConfEndpoint, upstream, server)
+	request := fmt.Sprintf("%v&upstream=%v&add=&server=%v%v", client.upstreamConfEndpoint, upstream, server, extraParams)
 
 	resp, err := client.httpClient.Get(request)
 	if err != nil {
@@ -231,7 +231,7 @@ func (client *Client) DeleteServer(upstream string, server string) error {
 // UpdateServers updates the servers of the upstream.
 // Servers that are in the slice, but don't exist in NGINX will be added to NGINX.
 // Servers that aren't in the slice, but exist in NGINX, will be removed from NGINX.
-func (client *Client) UpdateServers(upstream string, servers []string) ([]string, []string, error) {
+func (client *Client) UpdateServers(upstream string, servers []string, extraParams string) ([]string, []string, error) {
 	serversInNginx, err := client.GetServers(upstream)
 	if err != nil {
 		return nil, nil, fmt.Errorf("Failed to update servers of %v upstream: %v", upstream, err)
@@ -240,7 +240,7 @@ func (client *Client) UpdateServers(upstream string, servers []string) ([]string
 	toAdd, toDelete := determineUpdates(servers, serversInNginx)
 
 	for _, server := range toAdd {
-		err := client.AddServer(upstream, server)
+		err := client.AddServer(upstream, server, extraParams)
 		if err != nil {
 			return nil, nil, fmt.Errorf("Failed to update servers of %v upstream: %v", upstream, err)
 		}

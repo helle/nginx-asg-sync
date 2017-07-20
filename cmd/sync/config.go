@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
@@ -20,6 +21,10 @@ type upstream struct {
 	AutoscalingGroup string `yaml:"autoscaling_group"`
 	Port             int
 	Kind             string
+	MaxConns         int    `yaml:"max_conns"`
+	SlowStart        string `yaml:"slow_start"`
+	MaxFails         int    `yaml:"max_fails"`
+	FailTimeout      string `yaml:"fail_timeout"`
 }
 
 const errorMsgFormat = "The mandatory field %v is either empty or missing in the config file"
@@ -28,6 +33,33 @@ const upstreamNameErrorMsg = "The mandatory field name is either empty or missin
 const upstreamErrorMsgFormat = "The mandatory field %v is either empty or missing for the upstream %v in the config file"
 const upstreamPortErrorMsgFormat = "The mandatory field port is either zero or missing for the upstream %v in the config file"
 const upstreamKindErrorMsgFormat = "The mandatory field kind is either not equal to http or tcp or missing for the upstream %v in the config file"
+
+func makeIntParam(name string, value int) string {
+	return fmt.Sprintf("&%v=%d", name, value)
+}
+
+func makeStringParam(name string, value string) string {
+	return fmt.Sprintf("&%v=%v", name, value)
+}
+
+func makeExtraParams(ups *upstream) string {
+	var buffer bytes.Buffer
+
+	if ups.MaxConns != 0 {
+		buffer.WriteString(makeIntParam("max_conns", ups.MaxConns))
+	}
+	if ups.SlowStart != "" {
+		buffer.WriteString(makeStringParam("slow_start", ups.SlowStart))
+	}
+	if ups.MaxFails != 0 {
+		buffer.WriteString(makeIntParam("max_fails", ups.MaxFails))
+	}
+	if ups.FailTimeout != "" {
+		buffer.WriteString(makeStringParam("fail_timeout", ups.FailTimeout))
+	}
+
+	return buffer.String()
+}
 
 func parseConfig(data []byte) (*config, error) {
 	cfg, err := unmarshalConfig(data)
