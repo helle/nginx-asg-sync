@@ -130,6 +130,10 @@ upstreams:
    autoscaling_group: backend-two-group
    port: 80
    kind: http
+   max_conns: 20
+   slow_start: 10s
+   max_fails: 2
+   fail_timeout: 10s
 ```
 
 * The `region` key defines the AWS region where we deploy NGINX Plus and the Auto Scaling groups.
@@ -140,6 +144,10 @@ upstreams:
   * `autoscaling_group` – The name of the corresponding Auto Scaling group.
   * `port` – The port on which our backend applications are exposed.
   * `protocol` – The protocol of the traffic NGINX Plus load balances to the backend application, here `http`. If the application uses TCP/UDP, specify `stream` instead.
+  * `max_conns` – Optional, see NGINX Plus documentation
+  * `slow_start` – Optional, see NGINX Plus documentation
+  * `max_fails` – Optional, see NGINX Plus documentation
+  * `fail_timeout` – Optional, see NGINX Plus documentation
 
 ## Usage
 
