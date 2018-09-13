@@ -79,22 +79,6 @@ func getInvalidConfigInput() []*testInput {
 	return input
 }
 
-func TestExtraParams(t *testing.T) {
-	ups := upstream{
-		Name:             "backend1",
-		AutoscalingGroup: "backend-group",
-		Port:             80,
-		Kind:             "http",
-		MaxConns:         3,
-	}
-
-	extraParams := makeExtraParams(&ups)
-
-	if extraParams != "&max_conns=3" {
-		t.Errorf("makeExtraParams() generated wrong params: %v", extraParams)
-	}
-}
-
 func TestUnmarshalConfig(t *testing.T) {
 	cfg, err := unmarshalConfig(validYaml)
 	if err != nil {

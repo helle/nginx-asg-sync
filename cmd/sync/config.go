@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"time"
 
@@ -39,25 +38,6 @@ func makeIntParam(name string, value int) string {
 
 func makeStringParam(name string, value string) string {
 	return fmt.Sprintf("&%v=%v", name, value)
-}
-
-func makeExtraParams(ups *upstream) string {
-	var buffer bytes.Buffer
-
-	if ups.MaxConns != 0 {
-		buffer.WriteString(makeIntParam("max_conns", ups.MaxConns))
-	}
-	if ups.SlowStart != "" {
-		buffer.WriteString(makeStringParam("slow_start", ups.SlowStart))
-	}
-	if ups.MaxFails != 0 {
-		buffer.WriteString(makeIntParam("max_fails", ups.MaxFails))
-	}
-	if ups.FailTimeout != "" {
-		buffer.WriteString(makeStringParam("fail_timeout", ups.FailTimeout))
-	}
-
-	return buffer.String()
 }
 
 func parseConfig(data []byte) (*config, error) {
