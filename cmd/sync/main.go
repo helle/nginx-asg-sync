@@ -100,17 +100,17 @@ func main() {
 						MaxFails: 1,
 					}
 
-					if ups.MaxConns != 0 {
-						newServer.MaxConns = ups.MaxConns
+					if upstream.MaxConns != 0 {
+						newServer.MaxConns = upstream.MaxConns
 					}
-					if ups.SlowStart != "" {
-						newServer.SlowStart = ups.SlowStart
+					if upstream.SlowStart != "" {
+						newServer.SlowStart = upstream.SlowStart
 					}
-					if ups.MaxFails != 0 {
-						newServer.MaxFails = ups.MaxFails
+					if upstream.MaxFails != 0 {
+						newServer.MaxFails = upstream.MaxFails
 					}
-					if ups.FailTimeout != "" {
-						newServer.FailTimeout = ups.FailTimeout
+					if upstream.FailTimeout != "" {
+						newServer.FailTimeout = upstream.FailTimeout
 					}
 
 					upsServers = append(upsServers, newServer)
@@ -129,22 +129,22 @@ func main() {
 				var upsServers []StreamUpstreamServer
 				for _, ip := range ips {
 					backend := fmt.Sprintf("%v:%v", ip, upstream.Port)
-					newServer := UpstreamServer{
+					newServer := StreamUpstreamServer{
 						Server:   backend,
 						MaxFails: 1,
 					}
 
-					if ups.MaxConns != 0 {
-						newServer.MaxConns = ups.MaxConns
+					if upstream.MaxConns != 0 {
+						newServer.MaxConns = upstream.MaxConns
 					}
-					if ups.SlowStart != "" {
-						newServer.SlowStart = ups.SlowStart
+					if upstream.SlowStart != "" {
+						newServer.SlowStart = upstream.SlowStart
 					}
-					if ups.MaxFails != 0 {
-						newServer.MaxFails = ups.MaxFails
+					if upstream.MaxFails != 0 {
+						newServer.MaxFails = upstream.MaxFails
 					}
-					if ups.FailTimeout != "" {
-						newServer.FailTimeout = ups.FailTimeout
+					if upstream.FailTimeout != "" {
+						newServer.FailTimeout = upstream.FailTimeout
 					}
 
 					upsServers = append(upsServers, newServer)
