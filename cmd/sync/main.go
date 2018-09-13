@@ -91,28 +91,27 @@ func main() {
 				continue
 			}
 
-<<<<<<< e8aac8900fab9715794d6265378b0d3874392914
 			if upstream.Kind == "http" {
 				var upsServers []UpstreamServer
 				for _, ip := range ips {
 					backend := fmt.Sprintf("%v:%v", ip, upstream.Port)
-          newServer := UpstreamServer{
+					newServer := UpstreamServer{
 						Server:   backend,
 						MaxFails: 1,
 					}
-          
-        	if ups.MaxConns != 0 {
-            newServer.MaxConns = ups.MaxConns
-          }
-        	if ups.SlowStart != "" {
-        		newServer.SlowStart = ups.SlowStart
-        	}
-        	if ups.MaxFails != 0 {
-            newServer.MaxFails = ups.MaxFails
-        	}
-        	if ups.FailTimeout != "" {
-            newServer.FailTimeout = ups.FailTimeout
-        	}
+
+					if ups.MaxConns != 0 {
+						newServer.MaxConns = ups.MaxConns
+					}
+					if ups.SlowStart != "" {
+						newServer.SlowStart = ups.SlowStart
+					}
+					if ups.MaxFails != 0 {
+						newServer.MaxFails = ups.MaxFails
+					}
+					if ups.FailTimeout != "" {
+						newServer.FailTimeout = ups.FailTimeout
+					}
 
 					upsServers = append(upsServers, newServer)
 				}
@@ -130,10 +129,25 @@ func main() {
 				var upsServers []StreamUpstreamServer
 				for _, ip := range ips {
 					backend := fmt.Sprintf("%v:%v", ip, upstream.Port)
-					upsServers = append(upsServers, StreamUpstreamServer{
+					newServer := UpstreamServer{
 						Server:   backend,
 						MaxFails: 1,
-					})
+					}
+
+					if ups.MaxConns != 0 {
+						newServer.MaxConns = ups.MaxConns
+					}
+					if ups.SlowStart != "" {
+						newServer.SlowStart = ups.SlowStart
+					}
+					if ups.MaxFails != 0 {
+						newServer.MaxFails = ups.MaxFails
+					}
+					if ups.FailTimeout != "" {
+						newServer.FailTimeout = ups.FailTimeout
+					}
+
+					upsServers = append(upsServers, newServer)
 				}
 
 				added, removed, err := nginx.UpdateStreamServers(upstream.Name, upsServers)
